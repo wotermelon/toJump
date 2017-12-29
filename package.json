@@ -1,0 +1,17 @@
+{
+  "name": "toJump",
+  "version": "1.0.0",
+  "description": "play game on browser",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "wotermelon",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "fs-extra": "^5.0.0",
+    "opn": "^5.1.0",
+    "socket.io": "^2.0.4"
+  }
+}

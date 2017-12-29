@@ -1,0 +1,38 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.start-btn {
+  width: 100px;
+  height: 35px;
+  margin: 10px auto;
+  line-height: 35px;
+  background: #20a0ff;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.start-btn:hover {
+  background: #4db3ff;
+}
+
+.wrap {
+  width: 375px;
+  height: 700px;
+  margin: 0 auto;
+  background: url(../img/bg.png) no-repeat;
+  background-size: 100% 100%;
+  border-top: 1px solid transparent;
+}
+
+.main {
+  width: 86%;
+  height: 76%;
+  margin: 23% auto;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
