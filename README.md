@@ -29,4 +29,8 @@ npm start
 
 ps: 跳的精度不准问题可通过``config.js``中的``magicNumber``微调。。。
 
+## 截图预览
+
+![截图](https://github.com/wotermelon/toJump/blob/master/screenshot.png)
+
 由于图片未做处理，加载可能会有点慢。。。
