@@ -8,6 +8,9 @@ const opn = require('opn')
 const app = express()
 const config = require('./config')
 
+const device = require('./ios-device')
+const client = new device()
+
 const PUBLIC_PATH = path.join(__dirname, 'public')
 const ADB_PATH = path.join(__dirname, 'lib/adb/adb.exe')
 const SCREEN_SHOT_PATH = path.join(PUBLIC_PATH, 'img/screenshot')
@@ -25,30 +28,29 @@ server.on('listening', onListening)
 // })
 const io = require('socket.io')(server)
 io.on('connection', function (socket) {
-  console.log('已连接...')
+  console.log('页面已连接...')
   socket.on('distance', async function (data) {
     let time = Math.round(data * config.magicNumber)
-    console.log(time)
-    try {
-      await runCmd(`${ADB_PATH} shell input touchscreen swipe 200 200 200 200 ${time}`)
-      setTimeout(handler, time + 500)
-    } catch (error) {
-      io.emit('error', error)
-      throw error
-    }
+    await toJump(time)
   })
   socket.on('start', handler)
-
-  async function handler () {
-    try {
-      let screenImage = await getScreenShot()
-      io.emit('response', screenImage)
-    } catch (error) {
-      io.emit('error', error)
-      throw error
-    }
-  }
 })
+
+async function handler () {
+  try {
+    let screenImage 
+    if (config.device === 'andriod') {
+      screenImage = await getScreenShot()
+    } else if (config.device === 'ios') {
+      screenImage = await getScreenShotByIOS()
+    }
+
+    io.emit('response', screenImage)
+  } catch (error) {
+    io.emit('error', error)
+    throw error
+  }
+}
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -67,7 +69,7 @@ function onError(error) {
 function onListening() {
   var addr = server.address()
   console.log(`>>  Listening on port ${addr.port}`)
-  opn(`http://127.0.0.1:${addr.port}`)
+  // opn(`http://127.0.0.1:${addr.port}`)
 }
 
 // 执行cmd 命令
@@ -91,5 +93,41 @@ async function getScreenShot () {
   var imageName = `${+new Date}.png`
   await runCmd(`${ADB_PATH} shell screencap -p /sdcard/screenshot.png`)
   await runCmd(`${ADB_PATH} pull /sdcard/screenshot.png ${path.join(SCREEN_SHOT_PATH, imageName)}`)
+  return imageName
+}
+
+async function toJump (duration) {
+  if (config.device === 'ios') {
+    try {
+      await client.jump(duration / 1000)
+      setTimeout(handler, duration + 500)
+    } catch (error) {
+      io.emit('error', error)
+      throw error
+    }
+  }
+
+  if (config.device === 'android') {
+    try {
+      await runCmd(`${ADB_PATH} shell input touchscreen swipe 200 200 200 200 ${duration}`)      
+      setTimeout(handler, duration + 500)
+    } catch (e) {
+      io.emit('error', error)
+      throw error
+    }
+  }
+}
+
+async function getScreenShotByIOS () {
+  let data = await client.screenshot()
+  await fs.emptyDir(SCREEN_SHOT_PATH)
+  var imageName = `${+new Date}.png`
+  var fullpath = `${SCREEN_SHOT_PATH}/${imageName}`
+  try {
+    let check = await fs.access(fullpath)
+    await fs.unlink(fullpath)
+  } catch (e) {
+    await fs.writeFile(fullpath, data, 'base64')
+  }
   return imageName
 }
