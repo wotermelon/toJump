@@ -9,7 +9,10 @@ const app = express()
 const config = require('./config')
 
 const device = require('./ios-device')
-const client = new device()
+let client
+if (config.device === 'ios') {
+  client = new device()
+}
 
 const PUBLIC_PATH = path.join(__dirname, 'public')
 const ADB_PATH = path.join(__dirname, 'lib/adb/adb.exe')
@@ -39,7 +42,7 @@ io.on('connection', function (socket) {
 async function handler () {
   try {
     let screenImage 
-    if (config.device === 'andriod') {
+    if (config.device === 'android') {
       screenImage = await getScreenShot()
     } else if (config.device === 'ios') {
       screenImage = await getScreenShotByIOS()
