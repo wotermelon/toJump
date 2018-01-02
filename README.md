@@ -40,4 +40,10 @@ ps: 跳的精度不准问题可通过``config.js``中的``magicNumber``微调。
 
 ![截图](https://github.com/wotermelon/toJump/blob/master/screenshot.png)
 
+## 感谢
+
+  - 增加对ios设备的支持 [@moonou](https://github.com/moonou)
+
+----
+
 由于图片未做处理，加载可能会有点慢。。。
