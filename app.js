@@ -18,8 +18,8 @@ if (!ADB_PATH) {
   console.log('目前只支持mac和window系统...')
   process.exit(1)
 }
-const SCREEN_SHOT_PATH = path.join(PUBLIC_PATH, 'img/screenshot')
 const PUBLIC_PATH = path.join(__dirname, 'public')
+const SCREEN_SHOT_PATH = path.join(PUBLIC_PATH, 'img/screenshot')
 
 let client
 if (config.device === 'ios') {
