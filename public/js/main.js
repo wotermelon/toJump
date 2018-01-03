@@ -27,7 +27,7 @@
           })
         })
         socket.on('error', function (err) {
-          alert(error)
+          alert(err)
         })
         main.addEventListener('click', onClick, false)
       }
